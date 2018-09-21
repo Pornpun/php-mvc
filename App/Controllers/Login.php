@@ -34,13 +34,15 @@ class Login extends \Core\Controller
         
         //echo($_REQUEST['email'] . ', ' . $_REQUEST['password']);
         //$user = User::findByEmail($_POST['email']);
-        //var_dump($user);
+        //var_dump($_POST);
 
         $user = User::authenticate($_POST['email'], $_POST['password']);
+ 
+        $remember_me = isset($_POST['remember_me']);
 
         if ($user) {
 
-            Auth::login($user);
+            Auth::login($user, $remember_me);
 
             Flash::addMessage('Login successful');
 
@@ -51,7 +53,8 @@ class Login extends \Core\Controller
             Flash::addMessage('Login unsuccessful, please try again', Flash::WARNING);
 
             View::renderTemplate('Login/new.html', [
-                'email' => $_POST['email']
+                'email' => $_POST['email'],
+                'remember_me' => $remember_me
             ]);
         }
     }
@@ -82,7 +85,5 @@ class Login extends \Core\Controller
 
         $this->redirect('/');
     }
-
-
 
 }
